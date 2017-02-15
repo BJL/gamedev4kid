@@ -100,11 +100,6 @@ def collisionMask(objet,sprites):
     return collision
 
 def principale():
-    xEnemy = 600
-    yEnemy = 200
-
-
-
     game_over = False
     pygame.key.set_repeat(150,30)
 
