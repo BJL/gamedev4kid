@@ -19,7 +19,7 @@ surfaceH = 600
 pygame.init()
 clock = pygame.time.Clock()
 surface = pygame.display.set_mode((surfaceW,surfaceH))
-pygame.display.set_caption("petit jeu test")
+pygame.display.set_caption("Noa & Otis Production")
 
 # chargement des images
 joueur = Joueur()

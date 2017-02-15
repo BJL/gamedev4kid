@@ -3,73 +3,38 @@ import random
 
 from pygame.locals import *
 
-
-class Sapin(pygame.sprite.Sprite):
-    def __init__(self):
+class Decor(pygame.sprite.Sprite):
+    def __init__(self,path,x=0,y=0,minCoeff=1,maxCoeff=3):
         pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.image.load('images/sapin.png')
-
-        self.image = pygame.transform.scale(
-            self.image, (self.image.get_width() * 4, self.image.get_height() * 4))
+        self.image = pygame.image.load(path)
+        coeff = random.randint(minCoeff, maxCoeff)
+        self.image = pygame.transform.scale(self.image, (self.image.get_width() * coeff, self.image.get_height() * coeff))
         self.rect = self.image.get_rect()
-        self.rect.x = random.randint(20, 960 - self.rect.width)
-        self.rect.y = random.randint(10, 600 - self.rect.height)
+        if (x ==0 or y==0):
+            self.rect.x = random.randint(20, 960 - self.rect.width)
+            self.rect.y = random.randint(10, 600 - self.rect.height)
+        else:
+            self.rect.x = x
+            self.rect.y = y
         self.mask = pygame.mask.from_surface(self.image)
 
 
-class Rocher(pygame.sprite.Sprite):
-    def __init__(self):
-        pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.image.load('images/rocher.png')
+class Sapin(Decor):
+    def __init__(self,x=0,y=0):
+        Decor.__init__(self,'images/sapin.png',x,y)
 
-        coefficient = random.randint(2, 7)
-        self.image = pygame.transform.scale(self.image, (self.image.get_width() * coefficient, self.image.get_height() * coefficient))
-        self.rect = self.image.get_rect()
-        self.rect.x = random.randint(20, 960 - self.rect.width)
-        self.rect.y = random.randint(10, 600 - self.rect.height)
-        self.mask = pygame.mask.from_surface(self.image)
+class Rocher(Decor):
+    def __init__(self,x=0,y=0):
+        Decor.__init__(self,'images/rocher.png',x,y)
 
+class Feu(Decor):
+    def __init__(self,x=0,y=0):
+        Decor.__init__(self,'images/feu.png',x,y)
 
-class Feu(pygame.sprite.Sprite):
-    def __init__(self):
-        pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.image.load('images/feu.png')
+class Tombe(Decor):
+    def __init__(self,x=0,y=0):
+        Decor.__init__(self,'images/tombe.png',x,y)
 
-        coefficient = random.randint(2, 3)
-        self.image = pygame.transform.scale(self.image, (self.image.get_width() * coefficient
-            , self.image.get_height() * coefficient))
-        self.rect = self.image.get_rect()
-        self.rect.x = random.randint(20, 960 - self.rect.width)
-        self.rect.y = random.randint(10, 600 - self.rect.height)
-        self.mask = pygame.mask.from_surface(self.image)
-
-
-class Tombe(pygame.sprite.Sprite):
-    def __init__(self):
-        pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.image.load('images/tombe.png')
-
-
-        coefficient = random.randint(2, 3)
-        self.image = pygame.transform.scale(self.image, (self.image.get_width() * coefficient
-            , self.image.get_height() * coefficient))
-        self.rect = self.image.get_rect()
-        self.rect.x = random.randint(20, 960 - self.rect.width)
-        self.rect.y = random.randint(10, 600 - self.rect.height)
-        self.mask = pygame.mask.from_surface(self.image)
-
-
-class Buisson(pygame.sprite.Sprite):
-    def __init__(self):
-        pygame.sprite.Sprite.__init__(self)
-
-        self.image = pygame.image.load('images/buisson.png')
-        #self.image = pygame.Surface(self.image2.get_size())
-        #self.image.fill((113, 177, 227))
-
-        coefficient = random.randint(2, 3)
-        self.image = pygame.transform.scale(self.image, (self.image.get_width() * coefficient, self.image.get_height() * coefficient))
-        self.rect = self.image.get_rect()
-        self.rect.x = random.randint(20, 960 - self.rect.width)
-        self.rect.y = random.randint(10, 600 - self.rect.height)
-        self.mask = pygame.mask.from_surface(self.image)
+class Buisson(Decor):
+    def __init__(self,x=0,y=0):
+        Decor.__init__(self,'images/buisson.png',x,y,2,3)
