@@ -7,14 +7,14 @@ from pygame.locals import *
 
 class Poulpito(pygame.sprite.Sprite):
 
-    def __init__(self,x=0,y=0):
+    def __init__(self,(x,y)=(0,0)):
         pygame.sprite.Sprite.__init__(self)
         self.image = pygame.image.load('images/poulpito vert.png')
 
         coeff = 1
         self.image = pygame.transform.scale(self.image,(self.image.get_rect().width*coeff,self.image.get_rect().height*coeff))
         self.rect = self.image.get_rect()
-        if (x ==0 or y==0):
+        if (x ==0 and y==0):
             self.rect.x = random.randint(20, 960 - self.rect.width)
             self.rect.y = random.randint(10, 600 - self.rect.height)
         else:

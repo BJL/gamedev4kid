@@ -10,7 +10,7 @@ class Decor(pygame.sprite.Sprite):
         coeff = random.randint(minCoeff, maxCoeff)
         self.image = pygame.transform.scale(self.image, (self.image.get_width() * coeff, self.image.get_height() * coeff))
         self.rect = self.image.get_rect()
-        if (x ==0 or y==0):
+        if (x ==0 and y==0):
             self.rect.x = random.randint(20, 960 - self.rect.width)
             self.rect.y = random.randint(10, 600 - self.rect.height)
         else:
@@ -20,21 +20,21 @@ class Decor(pygame.sprite.Sprite):
 
 
 class Sapin(Decor):
-    def __init__(self,x=0,y=0):
+    def __init__(self,(x,y)=(0,0)):
         Decor.__init__(self,'images/sapin.png',x,y)
 
 class Rocher(Decor):
-    def __init__(self,x=0,y=0):
+    def __init__(self,(x,y)=(0,0)):
         Decor.__init__(self,'images/rocher.png',x,y)
 
 class Feu(Decor):
-    def __init__(self,x=0,y=0):
+    def __init__(self,(x,y)=(0,0)):
         Decor.__init__(self,'images/feu.png',x,y)
 
 class Tombe(Decor):
-    def __init__(self,x=0,y=0):
+    def __init__(self,(x,y)=(0,0)):
         Decor.__init__(self,'images/tombe.png',x,y)
 
 class Buisson(Decor):
-    def __init__(self,x=0,y=0):
+    def __init__(self,(x,y)=(0,0)):
         Decor.__init__(self,'images/buisson.png',x,y,2,3)

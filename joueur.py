@@ -7,7 +7,7 @@ from pygame.locals import *
 
 class Joueur(pygame.sprite.Sprite):
 
-    def __init__(self,x=480,y=300):
+    def __init__(self,(x,y)=(0,0)):
         pygame.sprite.Sprite.__init__(self)
         self.image = pygame.image.load('images/mechant chevalier.png')
 
