@@ -3,6 +3,19 @@ import random
 
 from pygame.locals import *
 
+
+decorGroup = pygame.sprite.Group()
+
+class TiledDecor(pygame.sprite.Sprite):
+    def __init__(self,image,x,y):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = image
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+        self.mask = pygame.mask.from_surface(self.image)
+        self.add(decorGroup)
+
 class Decor(pygame.sprite.Sprite):
     def __init__(self,path,x=0,y=0,minCoeff=1,maxCoeff=3):
         pygame.sprite.Sprite.__init__(self)
