@@ -8,7 +8,7 @@ from pygame.locals import *
 class Poulpito(pygame.sprite.Sprite):
 
     def __init__(self,(x,y)=(0,0)):
-        pygame.sprite.Sprite.__init__(self)
+        pygame.sprite.Sprite.__init__(self,self.containers)
         self.image = pygame.image.load('images/poulpito rose mechant.png')
 
         coeff = 0.5

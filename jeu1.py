@@ -1,7 +1,5 @@
 import sys
-import random
 import pygame
-
 
 from pygame.locals import *
 from pygame.gfxdraw import *
@@ -15,9 +13,6 @@ from maps import *
 
 
 # declaration
-blue = (113, 177, 227)
-white = (255, 255, 255)  # valeur max = 255
-
 surfaceW = 1024
 surfaceH = 768
 tileSize = 64
@@ -28,30 +23,26 @@ clock = pygame.time.Clock()
 surface = pygame.display.set_mode((surfaceW, surfaceH))
 pygame.display.set_caption("Noa & Otis Production")
 
+# groupe de sprites
+backgrounds = pygame.sprite.Group()
+decors = pygame.sprite.Group()
+enemies = pygame.sprite.Group()
+joueurs = pygame.sprite.Group()
+all = pygame.sprite.LayeredUpdates()
+
+Background.containers = backgrounds,all
+Decor.containers = decors,all
+Poulpito.containers =  enemies,all
+Joueur.containers = joueurs,all
+
 # chargement de la map
 map = Map()
 map.loadTiledMap()
 
-
-
-# chargement des images
+# chargement des sprites
 joueur = Joueur()
-enemies = [Poulpito(), Poulpito()]
-
-
-def drawImage(x, y, image):
-    surface.blit(image, (x, y))
-
-def drawSprites(sprites):
-    for sprite in sprites:
-        surface.blit(sprite.image, (sprite.rect.x, sprite.rect.y))
-        #pygame.gfxdraw.rectangle(surface, sprite.rect, (123, 123, 123))
-
-
-def drawSprite(sprite):
-    surface.blit(sprite.image, (sprite.rect.x, sprite.rect.y))
-    #pygame.gfxdraw.rectangle(surface, sprite.rect, (123, 123, 123))
-
+Poulpito()
+Poulpito()
 
 def enemiesMove(enemies, joueur):
     for enemy in enemies:
@@ -78,46 +69,54 @@ def enemyMove(enemi, joueur):
     if (jy - ey < 0):
         yMove = -3
 
-    collX = False
-    collY = False
-    enemi.update(xMove, 0)
-    if (collisionMask(enemi, decorGroup)):
-        enemi.update(-xMove, 0)
-        collX = True
+    if (collisionMask(enemi, decors,xMove,0)
+        or collisionMask(enemi,joueurs,xMove,0)):
+        xMove = 0
 
-    enemi.update(0, yMove)
-    if (collisionMask(enemi, decorGroup
-        )):
-        enemi.update(0, -yMove)
-        collY = True
+    if (collisionMask(enemi, decors,0,yMove)
+        or collisionMask(enemi,joueurs,0,yMove)):
+        yMove = 0
 
+    enemi.update(xMove, yMove)
 
-def collision(objet, sprites):
+def collision(objet, sprites,xMove,yMove):
     collision = False
+
+    objet.rect.x += xMove
+    objet.rect.y += yMove
     for sprite in sprites:
         collision = pygame.sprite.collide_rect(objet, sprite)
         if (collision):
             break
+
+    objet.rect.x -= xMove
+    objet.rect.y -= yMove
     return collision
 
 
-def collisionMask(objet, sprites):
+def collisionMask(objet, sprites,xMove,yMove):
     collision = False
+
+    objet.rect.x += xMove
+    objet.rect.y += yMove
     for sprite in sprites:
         point = pygame.sprite.collide_mask(objet, sprite)
         if (point != None):
             collision = True
             break
 
+    objet.rect.x -= xMove
+    objet.rect.y -= yMove
     return collision
 
 
 def principale():
     game_over = False
-    pygame.key.set_repeat(150, 30)
+    pygame.key.set_repeat(10, 10)
 
+    elapsed = 0
     while not game_over:
-        clock.tick(50)
+        elapsed = clock.tick(50)
         y_mouvement = 0
         x_mouvement = 0
         for event in pygame.event.get():
@@ -136,21 +135,26 @@ def principale():
                     x_mouvement = 6
 
         # gestion des collisions
-        joueur.update(x_mouvement, y_mouvement)
-        if (collisionMask(joueur, decorGroup)):
-            joueur.update(-x_mouvement, -y_mouvement)
+        if (collisionMask(joueur, decors,x_mouvement,y_mouvement)):
+            x_mouvement = 0
+            y_mouvement = 0
+
+
+        joueur.update(keys,x_mouvement, y_mouvement,elapsed)
 
         enemiesMove(enemies, joueur)
 
-        # dessin decors
-        map.drawMap(surface)
-        map.drawObject(surface)
-        decorGroup.draw(surface)
+        # dessin du background
+        #map.drawMap(surface)
+        # dessin des objets avec collision
+        #decors.draw(surface)
 
-        drawSprite(joueur)  # dessin du joueur
-        drawSprites(enemies)  # dessin des enemis
+        #drawSprite(joueur)  # dessin du joueur
+        #enemies.draw(surface)  # dessin des enemis
+        all.draw(surface)
 
         pygame.display.update()
+
 
 principale()
 pygame.quit()
