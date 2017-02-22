@@ -1,1 +1,5 @@
-readme.md
+pre requist
+    - pygame
+    - Tiled
+    - pyTMX
+    - pyScroll

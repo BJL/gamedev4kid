@@ -9,7 +9,7 @@ from pygame.locals import *
 
 class Joueur(pygame.sprite.Sprite):
 
-    def __init__(self, (x, y)=(0, 0)):
+    def __init__(self, (x, y)=(512, 384)):
         pygame.sprite.Sprite.__init__(self,self.containers)
         self.images = []
 
@@ -26,6 +26,7 @@ class Joueur(pygame.sprite.Sprite):
         self.mask = pygame.mask.from_surface(self.image)
         self.AI = 0
         self.animationDuration = 200
+        self.rotating = False
 
     def update(self,keys, x_move, y_move, elapsed):
         self.animationDuration -= elapsed
@@ -37,10 +38,15 @@ class Joueur(pygame.sprite.Sprite):
             self.image = self.images[1+ self.AI]
         elif (keys[K_UP]):
             self.image = self.images[5+ self.AI]
+        elif (keys[K_SPACE]):
+            self.rotating = True
         else:
             if (self.animationDuration < 0):
                 self.animationDuration = 200
                 self.image = self.images[0]
+                self.rotating = False
+        if (self.rotating):
+            self.image = pygame.transform.rotate(self.image,90)
 
         if (self.animationDuration < 0):
             self.animationDuration = 200

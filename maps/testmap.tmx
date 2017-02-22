@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="left-up" width="16" height="12" tilewidth="64" tileheight="64" nextobjectid="49">
+<map version="1.0" orientation="orthogonal" renderorder="left-up" width="16" height="12" tilewidth="64" tileheight="64" backgroundcolor="#050614" nextobjectid="50">
  <tileset firstgid="1" name="terrain" tilewidth="64" tileheight="64" tilecount="299" columns="23">
   <image source="../images/towerDefense_tilesheet.png" width="1472" height="832"/>
   <tile id="295">
@@ -9,6 +9,9 @@
   </tile>
  </tileset>
  <layer name="background" width="16" height="12">
+  <properties>
+   <property name="layer" type="int" value="0"/>
+  </properties>
   <data encoding="csv">
 51,51,51,51,51,51,24,25,26,51,51,51,51,51,51,51,
 51,51,51,51,51,51,24,25,26,51,51,11,12,12,12,13,
@@ -25,6 +28,9 @@
 </data>
  </layer>
  <layer name="foreground" width="16" height="12">
+  <properties>
+   <property name="layer" type="int" value="1"/>
+  </properties>
   <data encoding="csv">
 0,0,0,0,133,0,0,0,0,0,132,132,132,132,132,22,
 0,132,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -40,24 +46,13 @@
 0,21,0,133,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
- <objectgroup name="objets">
-  <properties>
-   <property name="layer" type="int" value="0"/>
-  </properties>
-  <object id="27" type="MISSILE" gid="182" x="576" y="320" width="64" height="64"/>
-  <object id="31" type="MISSILE" gid="182" x="576" y="640" width="64" height="64"/>
-  <object id="41" type="FEU" gid="296" x="960" y="384" width="64" height="64">
+ <objectgroup name="obstacle">
+  <object id="49" type="PORTE" gid="68" x="128" y="64" width="64" height="64">
    <properties>
-    <property name="animated" type="bool" value="true"/>
+    <property name="target" type="file" value="testmap2.tmx"/>
+    <property name="target.x" type="int" value="19"/>
+    <property name="target.y" type="int" value="7"/>
    </properties>
   </object>
-  <object id="48" gid="134" x="192" y="256" width="64" height="64"/>
- </objectgroup>
- <objectgroup name="objets2">
-  <properties>
-   <property name="layer" type="int" value="1"/>
-  </properties>
-  <object id="30" type="TOURELLE" gid="207" x="576" y="320" width="64" height="64"/>
-  <object id="32" type="TOURELLE" gid="207" x="576" y="640" width="64" height="64"/>
  </objectgroup>
 </map>
