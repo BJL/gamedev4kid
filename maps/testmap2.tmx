@@ -95,15 +95,15 @@
   <object id="6" type="PORTE" gid="64" x="1216" y="512" width="64" height="64">
    <properties>
     <property name="target" type="file" value="testmap.tmx"/>
-    <property name="target.x" type="int" value="2"/>
-    <property name="target.y" type="int" value="0"/>
+    <property name="target.x" type="int" value="128"/>
+    <property name="target.y" type="int" value="64"/>
    </properties>
   </object>
   <object id="7" type="PORTE" gid="91" x="1216" y="704" width="64" height="64">
    <properties>
     <property name="target" type="file" value="map3.tmx"/>
     <property name="target.x" type="int" value="0"/>
-    <property name="target.y" type="int" value="1"/>
+    <property name="target.y" type="int" value="128"/>
    </properties>
   </object>
  </objectgroup>

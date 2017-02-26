@@ -15,8 +15,8 @@ class Joueur(pygame.sprite.Sprite):
 
         for i in range(0, 13):
             if i in [1,4,7,10]:
-                self.images.append(pygame.image.load('images/player_' + str(i +1) + '.png'))
-            self.images.append(pygame.image.load('images/player_' + str(i) + '.png'))
+                self.images.append(pygame.image.load('images/player_' + str(i +1) + '.png').convert_alpha())
+            self.images.append(pygame.image.load('images/player_' + str(i) + '.png').convert_alpha())
 
 
         self.image = self.images[0]

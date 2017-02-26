@@ -10,6 +10,8 @@ class Decor(pygame.sprite.Sprite):
         self.rect.x = x
         self.rect.y = y
         self.mask = pygame.mask.from_surface(self.image)
+        if self.mask.count() == 0:
+            self.mask.fill()
         self.layer = layer
 
 class Background(pygame.sprite.Sprite):

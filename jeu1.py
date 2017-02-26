@@ -42,7 +42,7 @@ class Jeu:
         self.joueur = Joueur()
         Poulpito()
         Poulpito()
-        self.loadMap("testmap2.tmx")
+        self.loadMap("debut cart.tmx")
 
     def loadMap(self, file,(x,y)=(-1,-1)):
         self.decors.empty()
@@ -132,6 +132,20 @@ class Jeu:
         objet.rect.y -= yMove
         return collision
 
+    def OutOfBoundaries(self, objet,map, xMove, yMove):
+        outBound = False
+
+        objet.rect.x += xMove
+        objet.rect.y += yMove
+
+        outBound =  not map.rect.contains(objet.rect)
+
+
+        objet.rect.x -= xMove
+        objet.rect.y -= yMove
+
+        return outBound
+
     def principale(self):
         game_over = False
         pygame.key.set_repeat(10, 10)
@@ -159,7 +173,8 @@ class Jeu:
                         self.enterDoor(self.joueur, self.doors)
 
             # gestion des collisions
-            if (self.collisionMask(self.joueur, self.decors, x_mouvement, y_mouvement)):
+            if (self.collisionMask(self.joueur, self.decors, x_mouvement, y_mouvement)
+                or  self.OutOfBoundaries(self.joueur,self.map,x_mouvement, y_mouvement)):
                 x_mouvement = 0
                 y_mouvement = 0
 

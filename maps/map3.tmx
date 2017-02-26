@@ -43,8 +43,8 @@
   <object id="1" type="PORTE" gid="68" x="0" y="128" width="64" height="64">
    <properties>
     <property name="target" type="file" value="testmap2.tmx"/>
-    <property name="target.x" type="int" value="19"/>
-    <property name="target.y" type="int" value="10"/>
+    <property name="target.x" type="int" value="1216"/>
+    <property name="target.y" type="int" value="704"/>
    </properties>
   </object>
  </objectgroup>
