@@ -5,6 +5,7 @@ import pyscroll
 from pygame.locals import *
 from pytmx.util_pygame import load_pygame
 from decor import *
+from enemy import *
 
 
 class Map():
@@ -21,6 +22,8 @@ class Map():
     def loadObjects(self):
         for obj in self.tiled_map.objects:
             if obj.type == "PORTE":
-                Door(obj.image.convert_alpha(), obj.x, obj.y,obj.properties['target'],int(obj.properties['target.x']),int(obj.properties['target.y'])-64)
+                Door(obj.image, obj.x, obj.y,obj.properties['target'],int(obj.properties['target.x']),int(obj.properties['target.y'])-64)
+            elif obj.type == "ENEMY":
+                Enemy(obj.image, obj.x, obj.y)
             else:
                 Decor(obj.image, obj.x, obj.y)

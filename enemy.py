@@ -28,3 +28,17 @@ class Poulpito(pygame.sprite.Sprite):
 
     def update(self,x_move,y_move):
     	self.rect.move_ip(x_move,y_move)
+
+class Enemy(pygame.sprite.Sprite):
+
+    def __init__(self,image,x,y):
+        pygame.sprite.Sprite.__init__(self,self.containers)
+        self.image = image
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+        self.mask = pygame.mask.from_surface(self.image)
+
+
+    def update(self,x_move,y_move):
+        self.rect.move_ip(x_move,y_move)

@@ -9,8 +9,9 @@ from pylab import *
 
 from decor import *
 from joueur import *
-from enemy import *
+from enemy import Enemy,Poulpito
 from maps import *
+from bullet import Bullet
 
 
 class Jeu:
@@ -32,9 +33,12 @@ class Jeu:
         self.enemies = pygame.sprite.Group()
         self.joueurs = pygame.sprite.Group()
         self.doors = pygame.sprite.Group()
+        self.bullets = pygame.sprite.Group()
 
         Poulpito.containers = self.enemies
+        Enemy.containers = self.enemies
         Joueur.containers = self.joueurs
+        Bullet.containers = self.bullets
 
 
         # chargement de la map
@@ -47,6 +51,8 @@ class Jeu:
     def loadMap(self, file,(x,y)=(-1,-1)):
         self.decors.empty()
         self.doors.empty()
+        self.enemies.empty()
+        self.bullets.empty()
         if (hasattr(self, 'group')):
             self.group.empty()
         self.map.loadTiledMap(self.screenW, self.screenH, "maps/" + file)
@@ -58,10 +64,12 @@ class Jeu:
 
 
         self.group.center(self.joueur.rect.center)
-        self.group.add(self.enemies.sprites(), layer=3)
+
         Decor.containers = self.decors, self.group
         Door.containers = self.doors, self.group
+        Bullet.containers = self.bullets,self.group
         self.map.loadObjects()
+        self.group.add(self.enemies.sprites(), layer=3)
 
     def enemiesMove(self, enemies, joueur):
         for enemy in enemies:
@@ -132,19 +140,36 @@ class Jeu:
         objet.rect.y -= yMove
         return collision
 
-    def OutOfBoundaries(self, objet,map, xMove, yMove):
-        outBound = False
+    def drawLine(self,p):
+        p2 = pygame.mouse.get_pos()
+        if pygame.mouse.get_pressed()==(1,0,0):
+            pygame.draw.line(self.screen,(124,124,124),p,p2,3)
 
+
+
+    def OutOfBoundaries(self, objet,map, xMove, yMove):
         objet.rect.x += xMove
         objet.rect.y += yMove
 
         outBound =  not map.rect.contains(objet.rect)
 
-
         objet.rect.x -= xMove
         objet.rect.y -= yMove
 
         return outBound
+
+    def destroyOutOfBoundaries(self,group,map):
+        for sprite in group:
+            if not map.rect.contains(sprite.rect):
+                sprite.kill()
+
+    def calculateVector(self,xTarget,yTarget,xOrigine,yOrigine,xView=0,yView=0):
+
+        vTarget = Vector2(xTarget + xView,
+                          yTarget + yView)
+        vOrigine = Vector2(xOrigine,yOrigine)
+
+        return vTarget - vOrigine
 
     def principale(self):
         game_over = False
@@ -153,6 +178,7 @@ class Jeu:
         elapsed = 0
         while not game_over:
             elapsed = self.clock.tick(50)
+            canPlayerMove = True
             y_mouvement = 0
             x_mouvement = 0
             for event in pygame.event.get():
@@ -172,18 +198,27 @@ class Jeu:
                     if keys[K_SPACE]:
                         self.enterDoor(self.joueur, self.doors)
 
-            # gestion des collisions
+                if event.type == pygame.MOUSEBUTTONDOWN and pygame.mouse.get_pressed() == (1, 0, 0):
+                    v = self.calculateVector(pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1],
+                                         self.joueur.rect.centerx, self.joueur.rect.centery,
+                                         self.group.view.x, self.group.view.y)
+                    self.joueur.fire(elapsed,v)
+
+            # gestion des collisions et de la taille de l'ecran
             if (self.collisionMask(self.joueur, self.decors, x_mouvement, y_mouvement)
                 or  self.OutOfBoundaries(self.joueur,self.map,x_mouvement, y_mouvement)):
-                x_mouvement = 0
-                y_mouvement = 0
+                canPlayerMove = False
 
-            self.joueur.update(keys, x_mouvement, y_mouvement, elapsed)
+            self.joueur.update(keys, canPlayerMove, elapsed)
             self.enemiesMove(self.enemies, self.joueur)
+            self.bullets.update(elapsed)
 
+            self.destroyOutOfBoundaries(self.bullets,self.map)
             # dessin des sprites
             self.group.center(self.joueur.rect.center)
             self.group.draw(self.screen)
+
+            self.drawLine((self.joueur.rect.centerx-self.group.view.x, self.joueur.rect.centery - self.group.view.y))
 
             pygame.display.update()
 
