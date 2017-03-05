@@ -35,7 +35,6 @@ class Jeu:
         self.doors = pygame.sprite.Group()
         self.bullets = pygame.sprite.Group()
 
-        Poulpito.containers = self.enemies
         Enemy.containers = self.enemies
         Joueur.containers = self.joueurs
         Bullet.containers = self.bullets
@@ -44,8 +43,6 @@ class Jeu:
         # chargement de la map
         self.map = Map()
         self.joueur = Joueur()
-        Poulpito()
-        Poulpito()
         self.loadMap("debut cart.tmx")
 
     def loadMap(self, file,(x,y)=(-1,-1)):
@@ -73,7 +70,7 @@ class Jeu:
 
     def enemiesMove(self, enemies, joueur):
         for enemy in enemies:
-            self.enemyMove(enemy, joueur)
+            self.enemyMove2(enemy, joueur)
 
     def enemyMove(self, enemi, joueur):
         (jx, jy) = joueur.rect.center
@@ -105,25 +102,35 @@ class Jeu:
 
         enemi.update(xMove, yMove)
 
+    def enemyMove2(self, enemi, joueur):
+        vJ = Vector2(joueur.rect.center)
+        vE = Vector2(enemi.rect.center)
+        vMove = vJ - vE
+        xMove = 0
+        yMove = 0
+
+        if (vMove.length() > 250):
+            return
+        if vMove.length() > 3:
+            vMove.scale_to_length(3)
+
+        xMove = round(vMove[0])
+        yMove = round(vMove[1])
+
+        if (self.collisionMask(enemi, self.decors, xMove, 0)
+                or self.collisionMask(enemi, self.joueurs, xMove, 0)):
+            xMove = 0
+
+        if (self.collisionMask(enemi, self.decors, 0, yMove)
+                or self.collisionMask(enemi, self.joueurs, 0, yMove)):
+            yMove = 0
+
+        enemi.update(xMove, yMove)
+
     def enterDoor(self, objet, sprites):
         door = pygame.sprite.spritecollideany(objet, sprites)
         if (door != None):
             self.loadMap(door.target,(door.targetX,door.targetY))
-
-
-    def collision(self, objet, sprites, xMove, yMove):
-        collision = False
-
-        objet.rect.x += xMove
-        objet.rect.y += yMove
-        for sprite in sprites:
-            collision = pygame.sprite.collide_rect(objet, sprite)
-            if (collision):
-                break
-
-        objet.rect.x -= xMove
-        objet.rect.y -= yMove
-        return collision
 
     def collisionMask(self, objet, sprites, xMove, yMove):
         collision = False
@@ -140,11 +147,13 @@ class Jeu:
         objet.rect.y -= yMove
         return collision
 
-    def drawLine(self,p):
+    def bulletCollision(self,bullets,objects):
+        pygame.sprite.groupcollide(bullets,objects,True,True,pygame.sprite.collide_mask)
+
+    def drawLine(self,p,l=3):
         p2 = pygame.mouse.get_pos()
         if pygame.mouse.get_pressed()==(1,0,0):
-            pygame.draw.line(self.screen,(124,124,124),p,p2,3)
-
+            pygame.draw.line(self.screen,(124,124,124),p,p2,l)
 
 
     def OutOfBoundaries(self, objet,map, xMove, yMove):
@@ -176,33 +185,45 @@ class Jeu:
         pygame.key.set_repeat(10, 10)
 
         elapsed = 0
+        pressTime = 0
+        isPressed = False
         while not game_over:
             elapsed = self.clock.tick(50)
             canPlayerMove = True
             y_mouvement = 0
             x_mouvement = 0
+            if isPressed and pressTime < 1000:
+                pressTime += elapsed
+
             for event in pygame.event.get():
                 keys = pygame.key.get_pressed()
                 if event.type == pygame.QUIT or (keys[K_ESCAPE]):
                     game_over = True
 
                 if event.type == pygame.KEYDOWN:
-                    if keys[K_UP]:
+                    if keys[K_UP] or keys[K_z]:
                         y_mouvement = - 6
-                    if keys[K_DOWN]:
+                    if keys[K_DOWN] or keys[K_s]:
                         y_mouvement = 6
-                    if keys[K_LEFT]:
+                    if keys[K_LEFT] or keys[K_q]:
                         x_mouvement = -6
-                    if keys[K_RIGHT]:
+                    if keys[K_RIGHT] or keys[K_d]:
                         x_mouvement = 6
                     if keys[K_SPACE]:
                         self.enterDoor(self.joueur, self.doors)
 
                 if event.type == pygame.MOUSEBUTTONDOWN and pygame.mouse.get_pressed() == (1, 0, 0):
+                    isPressed = True
+
+
+
+                if event.type == pygame.MOUSEBUTTONUP:
+                    isPressed = False
                     v = self.calculateVector(pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1],
                                          self.joueur.rect.centerx, self.joueur.rect.centery,
                                          self.group.view.x, self.group.view.y)
-                    self.joueur.fire(elapsed,v)
+                    self.joueur.fire(elapsed,v,pressTime)
+                    pressTime = 0
 
             # gestion des collisions et de la taille de l'ecran
             if (self.collisionMask(self.joueur, self.decors, x_mouvement, y_mouvement)
@@ -213,12 +234,14 @@ class Jeu:
             self.enemiesMove(self.enemies, self.joueur)
             self.bullets.update(elapsed)
 
+            self.bulletCollision(self.bullets,self.enemies)
+
             self.destroyOutOfBoundaries(self.bullets,self.map)
             # dessin des sprites
             self.group.center(self.joueur.rect.center)
             self.group.draw(self.screen)
 
-            self.drawLine((self.joueur.rect.centerx-self.group.view.x, self.joueur.rect.centery - self.group.view.y))
+            self.drawLine((self.joueur.rect.centerx-self.group.view.x, self.joueur.rect.centery - self.group.view.y),pressTime/100)
 
             pygame.display.update()
 

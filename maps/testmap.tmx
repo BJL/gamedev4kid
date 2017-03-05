@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="left-up" width="16" height="12" tilewidth="64" tileheight="64" backgroundcolor="#050614" nextobjectid="53">
+<map version="1.0" orientation="orthogonal" renderorder="left-up" width="16" height="12" tilewidth="64" tileheight="64" backgroundcolor="#050614" nextobjectid="59">
  <tileset firstgid="1" name="terrain" tilewidth="64" tileheight="64" tilecount="299" columns="23">
   <image source="../images/towerDefense_tilesheet.png" width="1472" height="832"/>
   <tile id="295">
@@ -10,6 +10,14 @@
  </tileset>
  <tileset firstgid="300" name="64x64" tilewidth="64" tileheight="64" tilecount="192" columns="16">
   <image source="../images/64x64.png" width="1024" height="768"/>
+ </tileset>
+ <tileset firstgid="492" name="poulpito rose mechant" tilewidth="64" tileheight="64" tilecount="2" columns="0">
+  <tile id="0">
+   <image width="62" height="64" source="../images/poulpito rose mechant.png"/>
+  </tile>
+  <tile id="1">
+   <image width="64" height="64" source="../images/poulpito vert.png"/>
+  </tile>
  </tileset>
  <layer name="background" width="16" height="12">
   <properties>
@@ -64,7 +72,10 @@
     <property name="target.y" type="int" value="768"/>
    </properties>
   </object>
-  <object id="51" type="ENEMY" gid="461" x="128" y="256" width="64" height="64"/>
-  <object id="52" type="ENEMY" gid="460" x="320" y="192" width="64" height="64"/>
+  <object id="53" type="ENEMY" gid="492" x="320" y="192" width="62" height="64"/>
+  <object id="54" type="ENEMY" gid="492" x="128" y="512" width="62" height="64"/>
+  <object id="55" type="ENEMY" gid="492" x="384" y="320" width="62" height="64"/>
+  <object id="56" type="ENEMY" gid="493" x="64" y="256" width="64" height="64"/>
+  <object id="57" type="ENEMY" gid="493" x="576" y="384" width="64" height="64"/>
  </objectgroup>
 </map>

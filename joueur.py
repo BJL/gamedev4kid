@@ -36,18 +36,20 @@ class Joueur(pygame.sprite.Sprite):
         if moving:
             self.move(keys)
 
-    def fire(self,elapsed,v2d):
-        Bullet(self.rect.x,self.rect.y,v2d)
+    def fire(self,elapsed,v2d,power):
+        v = v2d.normalize() * (power / 20)
+
+        Bullet(self.rect.x,self.rect.y,v)
 
     def animation(self,keys,elapsed):
         self.animationDuration -= elapsed
-        if (keys[K_RIGHT]):
+        if keys[K_RIGHT] or keys[K_d]:
             self.image = self.images[9 + self.AI]
-        elif (keys[K_LEFT]):
+        elif keys[K_LEFT] or keys[K_q]:
             self.image = self.images[13 + self.AI]
-        elif (keys[K_DOWN]):
+        elif keys[K_DOWN] or keys[K_s]:
             self.image = self.images[1 + self.AI]
-        elif (keys[K_UP]):
+        elif keys[K_UP] or keys[K_z]:
             self.image = self.images[5 + self.AI]
         elif (keys[K_SPACE]):
             self.rotating = True
@@ -68,12 +70,12 @@ class Joueur(pygame.sprite.Sprite):
 
     def move(self, keys):
         (x_move, y_move) = (0,0)
-        if keys[K_UP]:
+        if keys[K_UP] or keys[K_z]:
             y_move = - Joueur.SPEED
-        if keys[K_DOWN]:
+        if keys[K_DOWN] or keys[K_s]:
             y_move = Joueur.SPEED
-        if keys[K_LEFT]:
+        if keys[K_LEFT] or keys[K_q]:
             x_move = - Joueur.SPEED
-        if keys[K_RIGHT]:
+        if keys[K_RIGHT] or keys[K_d]:
             x_move = Joueur.SPEED
         self.rect.move_ip(x_move, y_move)
