@@ -24,6 +24,7 @@ class Jeu:
         self.screenH = 600
         self.tileSize = 64
         pygame.init()
+        self.font = pygame.font.SysFont("Arial", 16)
         self.clock = pygame.time.Clock()
         self.screen = pygame.display.set_mode((self.screenW, self.screenH))
         pygame.display.set_caption("Noa & Otis Production")
@@ -52,7 +53,7 @@ class Jeu:
         self.bullets.empty()
         if (hasattr(self, 'group')):
             self.group.empty()
-        self.map.loadTiledMap(self.screenW, self.screenH, "maps/" + file)
+        self.map.loadTiledMap(self.screenW, self.screenH - 32 , "maps/" + file)
         self.group = pyscroll.PyscrollGroup(map_layer=self.map.map_layer)
         self.group.add(self.joueur, layer=3)
 
@@ -147,13 +148,25 @@ class Jeu:
         objet.rect.y -= yMove
         return collision
 
-    def bulletCollision(self,bullets,objects):
-        pygame.sprite.groupcollide(bullets,objects,True,True,pygame.sprite.collide_mask)
+    def bulletCollision(self,bullets,objects,doKill1=True,doKill2=True):
+        pygame.sprite.groupcollide(bullets,objects,doKill1,doKill2,pygame.sprite.collide_mask)
 
     def drawLine(self,p,l=3):
         p2 = pygame.mouse.get_pos()
         if pygame.mouse.get_pressed()==(1,0,0):
             pygame.draw.line(self.screen,(124,124,124),p,p2,l)
+
+    def drawMenu(self):
+        self.screen.fill((0, 0, 0), Rect(0, 568, 800, 32))
+        """
+        self.screen.blit(self.font.render(
+            "FPS : " + str(self.clock.get_fps()), 1,
+            pygame.color.THECOLORS['red']), (5, self.screenH - 32))
+        """
+        self.screen.blit(self.font.render("Weapon : Silver Sword"
+                                          , 1, pygame.color.THECOLORS['yellow']), (5, self.screenH - 32))
+        self.screen.blit(self.font.render("Experience : 0"
+                                          , 1, pygame.color.THECOLORS['yellow']), (5, self.screenH - 18))
 
 
     def OutOfBoundaries(self, objet,map, xMove, yMove):
@@ -214,9 +227,6 @@ class Jeu:
 
                 if event.type == pygame.MOUSEBUTTONDOWN and pygame.mouse.get_pressed() == (1, 0, 0):
                     isPressed = True
-
-
-
                 if event.type == pygame.MOUSEBUTTONUP:
                     isPressed = False
                     v = self.calculateVector(pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1],
@@ -235,12 +245,16 @@ class Jeu:
             self.bullets.update(elapsed)
 
             self.bulletCollision(self.bullets,self.enemies)
+            self.bulletCollision(self.bullets, self.decors,True,False)
+
 
             self.destroyOutOfBoundaries(self.bullets,self.map)
             # dessin des sprites
-            self.group.center(self.joueur.rect.center)
-            self.group.draw(self.screen)
 
+            self.group.center(self.joueur.rect.center)
+
+            self.group.draw(self.screen)
+            self.drawMenu()
             self.drawLine((self.joueur.rect.centerx-self.group.view.x, self.joueur.rect.centery - self.group.view.y),pressTime/100)
 
             pygame.display.update()
