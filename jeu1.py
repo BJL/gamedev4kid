@@ -5,7 +5,6 @@ import pyscroll
 from pygame.locals import *
 from pygame.gfxdraw import *
 from pygame.math import *
-from pylab import *
 
 from decor import *
 from joueur import *
